@@ -1,3 +1,77 @@
+# Laravel Starter Guide
+
+A simple **Laravel 11** reference project built for **educational and practice purposes**.  
+This repository serves as a clean starting point for beginners who want to understand basic Laravel concepts such as routing, controllers, models, migrations, validation, and Blade templating.
+
+---
+
+## 📘 Overview
+
+This project includes:
+- User management (Student and Faculty examples)
+- CRUD operations (Create, Read, Update, Delete)
+- Form validation with reusable functions
+- Clean and minimal Blade layouts
+- Database transactions with rollback protection
+- Tailwind CSS for styling
+
+It is designed to help students and new developers learn the Laravel structure and conventions in a simplified, organized way.
+
+---
+
+
+## ⚙️ Installation
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/Je-ric/laravel-starter.git
+
+# 2. Navigate into the project
+cd laravel-starter
+
+# 3. Install dependencies
+composer install
+npm install
+
+# 4. Copy and configure your environment file
+cp .env.example .env
+php artisan key:generate
+
+# 5. Run migrations
+php artisan migrate
+
+# 6. Start local development server
+php artisan serve
+
+
+## 🧠 Educational Purpose
+
+This repository is intended for **laboratory exercises**, **academic projects**, and **beginner practice**.  
+Feel free to modify, experiment, and extend the code to explore **Laravel** further.
+
+---
+
+## 🔗 Useful Laravel Development Links
+
+- [📖 Laravel Official Documentation](https://laravel.com/docs)
+- [🎨 Tailwind CSS](https://tailwindcss.com/docs)
+- [🧰 Composer](https://getcomposer.org/)
+- [💡 PHP: The Right Way](https://phptherightway.com/)
+- [🚀 Laravel Tinker](https://laravel.com/docs/artisan#tinker)
+- [🧩 Artisan Command Reference](https://laravel.com/docs/artisan)
+- [🌐 Laravel Community Forum](https://laracasts.com/discuss)
+- [📚 Laracasts (Video Tutorials)](https://laracasts.com/)
+
+---
+
+## 🧑‍💻 Author
+
+**Developed by:** [Je-ric](https://github.com/Je-ric)  
+*BSIT Student — Central Luzon State University*
+
+
+---
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">

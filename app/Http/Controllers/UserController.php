@@ -31,7 +31,17 @@ class UserController extends Controller
     {
         // dd($request);
         //validate
-        $this->validateUserStore($request);
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'nullable|min:6|confirmed:confirm_password'
+        ], [
+            'name.required' => 'Name is required.',
+            'password.min' => 'Maiksi password mo.',
+            'password.confirmed' => 'I-coconfirm mo lang PASSWORD mo, hindi mo pa itinama!!!',
+            'email.email' => 'Sure ka ba kasing email nilagay mo?!?!',
+            'email.unique' => 'Nakarecord na eh! Lagay ka ng ibang email!'
+        ]);
 
         // store - insert
         // 1
@@ -43,7 +53,6 @@ class UserController extends Controller
             $user->name = $request->name;
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
-            $user->user_type = 'student'; 
             $user->save();
 
             DB::commit();
@@ -60,7 +69,7 @@ class UserController extends Controller
         //
     }
 
-    public function student_edit(string $id) 
+    public function student_edit(string $id)
     {
         $user = User::findOrFail($id);
         return view('edit_student', compact('user'));
@@ -118,7 +127,17 @@ class UserController extends Controller
 
     public function faculty_store(Request $request)
     {
-        $this->validateUserStore($request);
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'nullable|min:6|confirmed:confirm_password'
+        ], [
+            'name.required' => 'Name is required.',
+            'password.min' => 'Maiksi password mo.',
+            'password.confirmed' => 'I-coconfirm mo lang PASSWORD mo, hindi mo pa itinama!!!',
+            'email.email' => 'Sure ka ba kasing email nilagay mo?!?!',
+            'email.unique' => 'Nakarecord na eh! Lagay ka ng ibang email!'
+        ]);
 
         DB::beginTransaction();
         try {
@@ -144,7 +163,7 @@ class UserController extends Controller
         return redirect()->route('faculty.index');
     }
 
-    public function faculty_edit(string $id) 
+    public function faculty_edit(string $id)
     {
         $user = User::findOrFail($id);
         return view('edit_faculty', compact('user'));
@@ -163,7 +182,7 @@ class UserController extends Controller
             // if ($request->password) {
             //     $user->password = Hash::make($request->password);
             // }
-            
+
             $user->save();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -173,26 +192,11 @@ class UserController extends Controller
         return redirect()->route('faculty.index');
     }
 
-    // DRY kuno 
+    // DRY kuno
 
     // validation - validateUser (separate sa store and update)
     // store      - storeUser
     // update     - updateUser
-
-    private function validateUserStore(Request $request)
-    {
-        return $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed:confirm_password',
-        ], [
-            'name.required' => 'Name is required.',
-            'password.min' => 'Maiksi password mo.',
-            'password.confirmed' => 'I-coconfirm mo lang PASSWORD mo, hindi mo pa itinama!!!',
-            'email.email' => 'Sure ka ba kasing email nilagay mo?!?!',
-            'email.unique' => 'Nakarecord na eh! Lagay ka ng ibang email!'
-        ]);
-    }
 
     private function validateUserUpdate(Request $request, User $user)
     {
@@ -208,5 +212,5 @@ class UserController extends Controller
             'email.unique' => 'Nakarecord na eh! Lagay ka ng ibang email!'
         ]);
     }
-    
+
 }

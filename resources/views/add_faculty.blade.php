@@ -61,10 +61,11 @@
                     Cancel
                 </a>
 
-                <button type="submit"
+                <input type="submit"
+                        name="add"
+                        value="Add Faculty"
                         class="px-6 py-2 rounded-lg text-white font-semibold shadow-md bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 hover:opacity-90 transition">
-                    Add Faculty
-                </button>
+                </input>
             </div>
         </form>
     </div>

@@ -42,10 +42,11 @@
                     Cancel
                 </a>
 
-                <button type="submit"
+                <input type="submit"
+                        name="update"
+                        value="Update Student"
                         class="px-6 py-2 rounded-lg text-white font-semibold shadow-md bg-gradient-to-r from-blue-500 to-teal-400 hover:from-blue-600 hover:to-teal-500 transition">
-                    Update Student
-                </button>
+                </input>
             </div>
         </form>
     </div>

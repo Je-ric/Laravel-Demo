@@ -1,55 +1,55 @@
 @extends('layout.app')
 
 @section('page-content')
-    <div class="mx-4 md:mx-8 lg:mx-16 flex justify-between items-center py-8">
-        <h1 class="text-2xl font-semibold pb-2">Faculty Page</h1>
-        <a href="{{ route('faculty.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
-            + Add Faculty
-        </a>
+
+<div class="bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 text-white px-14 py-6 shadow-md">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold">Faculty Portal</h1>
+                <p class="text-sm opacity-90">Welcome back, {{ Auth::user()->name ?? 'Faculty' }}</p>
+            </div>
+            <a href="{{ route('faculty.create') }}"
+                class="bg-white text-yellow-700 font-semibold px-4 py-2 rounded-lg shadow hover:bg-yellow-50 transition">
+                + Add Faculty
+            </a>
+        </div>
     </div>
 
-    <div class="mx-4 md:mx-8 lg:mx-16 mb-8">
+    <div class="mx-4 md:mx-8 lg:mx-16 my-10">
+        <div class="bg-white rounded-2xl shadow-md p-6 border border-gray-100">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700">Faculty List</h2>
 
-        <div class="overflow-x-auto shadow-md sm:rounded-lg">
-
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            Faculty name
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Email
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($users as $user)
-                        <tr
-                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            <td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                {{ $user->name }}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{ $user->email }}
-                            </td>
-                            <td>
-                                <a href="{{ route('faculty.edit', $user->id) }}" 
-                                    class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition">
-                                    Edit
-                                </a>
-
-                                <form action="{{ route('faculty.destroy', $user->id) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <input type="submit" value="Delete"
-                                        class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition cursor-pointer">
-                                </form>
-                            </td>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-600">
+                    <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+                        <tr>
+                            <th class="px-6 py-3">Name</th>
+                            <th class="px-6 py-3">Email</th>
+                            <th class="px-6 py-3">Actions</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($users as $user)
+                            <tr class="border-b hover:bg-amber-50 transition">
+                                <td class="px-6 py-4 font-medium text-gray-900">{{ $user->name }}</td>
+                                <td class="px-6 py-4">{{ $user->email }}</td>
+                                <td class="px-6 py-4 space-x-2">
+                                    <a href="{{ route('faculty.edit', $user->id) }}"
+                                        class="bg-gradient-to-r from-yellow-400 to-amber-500 text-white px-4 py-2 rounded-lg hover:opacity-90 transition">
+                                        Edit
+                                    </a>
+                                    <form action="{{ route('faculty.destroy', $user->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <input type="submit" value="Delete"
+                                            class="bg-gradient-to-r from-red-500 to-rose-600 text-white px-4 py-2 rounded-lg hover:opacity-90 transition cursor-pointer">
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 @endsection

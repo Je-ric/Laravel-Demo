@@ -31,7 +31,13 @@
                     <tbody>
                         @foreach ($users as $user)
                             <tr class="border-b hover:bg-blue-50 transition">
-                                <td class="px-6 py-4 font-medium text-gray-900">{{ $user->name }}</td>
+                                <td class="px-6 py-4 flex items-center space-x-3">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-teal-400 flex items-center justify-center text-white font-bold shadow-sm">
+                                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                                    </div>
+                                    <span class="font-medium text-gray-900">{{ $user->name }}</span>
+                                </td>
+                                {{-- <td class="px-6 py-4 font-medium text-gray-900">{{ $user->name }}</td> --}}
                                 <td class="px-6 py-4">{{ $user->email }}</td>
                                 <td class="px-6 py-4 space-x-2">
                                     <a href="{{ route('student.edit', $user->id) }}"

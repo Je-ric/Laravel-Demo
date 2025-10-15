@@ -31,17 +31,19 @@ class UserController extends Controller
     {
         // dd($request);
         //validate
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'nullable|min:6|confirmed:confirm_password'
-        ], [
-            'name.required' => 'Name is required.',
-            'password.min' => 'Maiksi password mo.',
-            'password.confirmed' => 'I-coconfirm mo lang PASSWORD mo, hindi mo pa itinama!!!',
-            'email.email' => 'Sure ka ba kasing email nilagay mo?!?!',
-            'email.unique' => 'Nakarecord na eh! Lagay ka ng ibang email!'
-        ]);
+
+        $this->validateUserStore($request);
+        // $request->validate([
+        //     'name' => 'required',
+        //     'email' => 'required|email|unique:users',
+        //     'password' => 'nullable|min:6|confirmed:confirm_password'
+        // ], [
+        //     'name.required' => 'Name is required.',
+        //     'password.min' => 'Maiksi password mo.',
+        //     'password.confirmed' => 'I-coconfirm mo lang PASSWORD mo, hindi mo pa itinama!!!',
+        //     'email.email' => 'Sure ka ba kasing email nilagay mo?!?!',
+        //     'email.unique' => 'Nakarecord na eh! Lagay ka ng ibang email!'
+        // ]);
 
         // store - insert
         // 1
@@ -127,17 +129,19 @@ class UserController extends Controller
 
     public function faculty_store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'nullable|min:6|confirmed:confirm_password'
-        ], [
-            'name.required' => 'Name is required.',
-            'password.min' => 'Maiksi password mo.',
-            'password.confirmed' => 'I-coconfirm mo lang PASSWORD mo, hindi mo pa itinama!!!',
-            'email.email' => 'Sure ka ba kasing email nilagay mo?!?!',
-            'email.unique' => 'Nakarecord na eh! Lagay ka ng ibang email!'
-        ]);
+
+        $this->validateUserStore($request);
+        // $request->validate([
+        //     'name' => 'required',
+        //     'email' => 'required|email|unique:users',
+        //     'password' => 'nullable|min:6|confirmed:confirm_password'
+        // ], [
+        //     'name.required' => 'Name is required.',
+        //     'password.min' => 'Maiksi password mo.',
+        //     'password.confirmed' => 'I-coconfirm mo lang PASSWORD mo, hindi mo pa itinama!!!',
+        //     'email.email' => 'Sure ka ba kasing email nilagay mo?!?!',
+        //     'email.unique' => 'Nakarecord na eh! Lagay ka ng ibang email!'
+        // ]);
 
         DB::beginTransaction();
         try {
@@ -198,6 +202,20 @@ class UserController extends Controller
     // store      - storeUser
     // update     - updateUser
 
+    public function validateUserStore(Request $request)
+    {
+        return $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'nullable|min:6|confirmed:confirm_password',
+        ], [
+            'name.required' => 'Name is required.',
+            'password.min' => 'Maiksi password mo.',
+            'password.confirmed' => 'I-coconfirm mo lang PASSWORD mo, hindi mo pa itinama!!!',
+            'email.email' => 'Sure ka ba kasing email nilagay mo?!?!',
+            'email.unique' => 'Nakarecord na eh! Lagay ka ng ibang email!'
+        ]);
+    }
     private function validateUserUpdate(Request $request, User $user)
     {
         return $request->validate([

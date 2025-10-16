@@ -1,0 +1,1037 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Laravel Cheatsheet — Routing, Controllers, Models</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Concise Laravel cheatsheet for Routing, Controllers, and Models using Tailwind CSS." />
+  <style>
+    /* Code block tweaks */
+    pre { position: relative; }
+    pre code { font-size: .875rem; line-height: 1.5; }
+    .copy-btn {
+      position: absolute; top: .5rem; right: .5rem;
+      background: rgba(15,23,42,.8);
+      color: #fff; padding: .25rem .5rem; border-radius: .25rem;
+      font-size: .75rem; display: none;
+    }
+    pre:hover .copy-btn { display: inline-flex; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <header class="sticky top-0 z-30 bg-white/80 backdrop-blur border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center gap-4">
+      <h1 class="text-xl md:text-2xl font-bold tracking-tight">Laravel Cheatsheet</h1>
+      <span class="text-slate-400">•</span>
+      <p class="text-slate-600">Routing · Controllers · Models</p>
+      <div class="ml-auto w-64 hidden md:block">
+        <label class="sr-only" for="search">Search</label>
+        <input id="search" type="search" placeholder="Quick filter (e.g., resource, paginate, morph)"
+               class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6">
+    <!-- Sidebar -->
+    <aside class="lg:sticky lg:top-[76px] lg:self-start">
+      <nav class="bg-white border border-slate-200 rounded-lg shadow-sm p-3">
+        <p class="px-2 pt-1 pb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">On this page</p>
+        <ul class="space-y-1 text-sm">
+          <li><a href="#quickstart" class="block rounded px-2 py-1 hover:bg-slate-100">Quick Start</a></li>
+          <li><a href="#templates" class="block rounded px-2 py-1 hover:bg-slate-100">Templates & Guides</a></li>
+          <li><a href="#artisan" class="block rounded px-2 py-1 hover:bg-slate-100">Artisan (Scaffolding)</a></li>
+          <ul class="pl-4 space-y-1">
+            <li><a href="#artisan-controllers" class="block rounded px-2 py-1 hover:bg-slate-100">Controllers</a></li>
+            <li><a href="#artisan-models" class="block rounded px-2 py-1 hover:bg-slate-100">Models</a></li>
+            <li><a href="#artisan-migrations" class="block rounded px-2 py-1 hover:bg-slate-100">Migrations/Factories/Seeders</a></li>
+            <li><a href="#artisan-routes-cli" class="block rounded px-2 py-1 hover:bg-slate-100">Routes CLI</a></li>
+          </ul>
+          <li><a href="#routing" class="block rounded px-2 py-1 hover:bg-slate-100">Routing</a></li>
+          <ul class="pl-4 space-y-1">
+            <li><a href="#basic-routes" class="block rounded px-2 py-1 hover:bg-slate-100">Basic routes</a></li>
+            <li><a href="#route-params" class="block rounded px-2 py-1 hover:bg-slate-100">Route params</a></li>
+            <li><a href="#http-methods" class="block rounded px-2 py-1 hover:bg-slate-100">HTTP methods</a></li>
+            <li><a href="#when-to-use-methods" class="block rounded px-2 py-1 hover:bg-slate-100">When to use which</a></li>
+            <li><a href="#route-names" class="block rounded px-2 py-1 hover:bg-slate-100">Route names</a></li>
+            <li><a href="#resource-routes" class="block rounded px-2 py-1 hover:bg-slate-100">Resource routes</a></li>
+            <li><a href="#route-model-binding" class="block rounded px-2 py-1 hover:bg-slate-100">Model binding</a></li>
+            <li><a href="#route-groups" class="block rounded px-2 py-1 hover:bg-slate-100">Route groups</a></li>
+          </ul>
+          <li><a href="#controllers" class="block rounded px-2 py-1 hover:bg-slate-100">Controllers</a></li>
+          <ul class="pl-4 space-y-1">
+            <li><a href="#controller-structure" class="block rounded px-2 py-1 hover:bg-slate-100">Structure</a></li>
+            <li><a href="#controller-crud" class="block rounded px-2 py-1 hover:bg-slate-100">CRUD actions</a></li>
+            <li><a href="#controller-returns" class="block rounded px-2 py-1 hover:bg-slate-100">Return types</a></li>
+            <li><a href="#controller-middleware" class="block rounded px-2 py-1 hover:bg-slate-100">Middleware</a></li>
+            <li><a href="#controller-helpers" class="block rounded px-2 py-1 hover:bg-slate-100">Validation, etc.</a></li>
+          </ul>
+          <li><a href="#models" class="block rounded px-2 py-1 hover:bg-slate-100">Models</a></li>
+          <ul class="pl-4 space-y-1">
+            <li><a href="#model-basics" class="block rounded px-2 py-1 hover:bg-slate-100">Basics & fillable</a></li>
+            <li><a href="#model-relationships" class="block rounded px-2 py-1 hover:bg-slate-100">Relationships</a></li>
+            <li><a href="#model-usage" class="block rounded px-2 py-1 hover:bg-slate-100">Common usage</a></li>
+          </ul>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Content -->
+    <section class="space-y-10">
+      <!-- Quick Start -->
+      <section id="quickstart" class="bg-white border border-slate-200 rounded-lg shadow-sm">
+        <div class="p-5 border-b border-slate-200">
+          <h2 class="text-xl font-semibold">Quick Start: CRUD in 5 steps</h2>
+          <p class="text-slate-600 mt-1 text-sm">The fastest path to a working resource (model + controller + routes).</p>
+        </div>
+        <div class="p-5 space-y-6">
+          <div class="rounded-md border-l-4 border-indigo-500 bg-indigo-50 p-3 text-sm text-slate-700">
+            <p class="font-medium">Beginner tip</p>
+            <p>Run these commands in your Laravel project root. If you see "command not found", make sure you have PHP and Composer installed and you’re inside a Laravel app.</p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold mb-2">1) Generate everything you need</h3>
+            <p class="text-slate-600 text-sm mb-2">Model + migration + controller (resource)</p>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-bash">php artisan make:model Post -mcr</code></pre>
+            <p class="text-slate-600 text-sm">Alternative: add <code class="bg-slate-100 text-slate-800 px-1 rounded">-f</code> for a factory or use <code class="bg-slate-100 text-slate-800 px-1 rounded">-a</code> for everything.</p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold mb-2">2) Run migrations</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-bash">php artisan migrate</code></pre>
+          </div>
+
+          <div>
+            <h3 class="font-semibold mb-2">3) Add a resource route</h3>
+            <p class="text-slate-600 text-sm mb-2">In <code class="bg-slate-100 text-slate-800 px-1 rounded">routes/web.php</code>:</p>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">use App\Http\Controllers\PostController;
+
+Route::resource('posts', PostController::class);
+</code></pre>
+          </div>
+
+          <div>
+            <h3 class="font-semibold mb-2">4) Fill your controller actions</h3>
+            <p class="text-slate-600 text-sm mb-2">Open <code class="bg-slate-100 text-slate-800 px-1 rounded">app/Http/Controllers/PostController.php</code> and implement <code class="bg-slate-100 text-slate-800 px-1 rounded">index</code>, <code class="bg-slate-100 text-slate-800 px-1 rounded">store</code>, etc. (see examples below).</p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold mb-2">5) Visit your routes</h3>
+            <p class="text-slate-600 text-sm">Try <code class="bg-slate-100 text-slate-800 px-1 rounded">/posts</code>, <code class="bg-slate-100 text-slate-800 px-1 rounded">/posts/create</code>, etc.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Templates & Guides -->
+      <section id="templates" class="bg-white border border-slate-200 rounded-lg shadow-sm">
+        <div class="p-5 border-b border-slate-200">
+          <h2 class="text-xl font-semibold">Templates & Guides</h2>
+          <p class="text-slate-600 mt-1 text-sm">Drop-in templates for models, controllers, and routes.</p>
+        </div>
+        <div class="p-5 space-y-8">
+          <div>
+            <h3 class="font-semibold mb-2">Model template</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
+{
+    use HasFactory;
+
+    // Allow mass-assignment of these fields
+    protected $fillable = ['title', 'body', 'published_at'];
+
+    // Example relationship
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+}
+</code></pre>
+          </div>
+
+          <div>
+            <h3 class="font-semibold mb-2">Migration template</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('title');
+            $table->text('body')->nullable();
+            $table->timestamp('published_at')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('posts');
+    }
+};
+</code></pre>
+          </div>
+
+          <div>
+            <h3 class="font-semibold mb-2">Controller template (resource)</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">namespace App\Http\Controllers;
+
+use App\Models\Post;
+use Illuminate\Http\Request;
+
+class PostController extends Controller
+{
+    public function index()
+    {
+        $posts = Post::latest()->paginate(10);
+        return view('posts.index', compact('posts'));
+    }
+
+    public function create()
+    {
+        return view('posts.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'body' => 'nullable|string',
+            'published_at' => 'nullable|date',
+        ]);
+
+        $validated['user_id'] = auth()->id();
+        $post = Post::create($validated);
+
+        return redirect()->route('posts.show', $post)->with('success', 'Post created');
+    }
+
+    public function show(Post $post)
+    {
+        return view('posts.show', compact('post'));
+    }
+
+    public function edit(Post $post)
+    {
+        return view('posts.edit', compact('post'));
+    }
+
+    public function update(Request $request, Post $post)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'body' => 'nullable|string',
+            'published_at' => 'nullable|date',
+        ]);
+
+        $post->update($validated);
+        return redirect()->route('posts.show', $post)->with('success', 'Post updated');
+    }
+
+    public function destroy(Post $post)
+    {
+        $post->delete();
+        return redirect()->route('posts.index')->with('success', 'Post deleted');
+    }
+}
+</code></pre>
+          </div>
+
+          <div>
+            <h3 class="font-semibold mb-2">Routes template</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">use App\Http\Controllers\PostController;
+
+// All CRUD routes
+Route::resource('posts', PostController::class);
+
+// Optional: group with middleware and name prefix
+Route::middleware('auth')->name('posts.')->group(function () {
+    Route::get('/posts', [PostController::class, 'index'])->name('index');
+    Route::post('/posts', [PostController::class, 'store'])->name('store');
+});
+</code></pre>
+          </div>
+
+          <div>
+            <h3 class="font-semibold mb-2">Views templates (layout + pages)</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-blade">&lt;!-- resources/views/layouts/app.blade.php --&gt;
+&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Laravel App&lt;/title&gt;
+  &lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body class="bg-slate-50 text-slate-800"&gt;
+  &lt;div class="max-w-5xl mx-auto p-6"&gt;
+    &lt;h1 class="text-xl font-semibold mb-4"&gt;@yield('title')&lt;/h1&gt;
+    @if(session('success'))
+      &lt;div class="mb-4 rounded border border-emerald-300 bg-emerald-50 px-3 py-2"&gt;{{ session('success') }}&lt;/div&gt;
+    @endif
+    @yield('content')
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-blade">&lt;!-- resources/views/posts/index.blade.php --&gt;
+@extends('layouts.app')
+@section('title', 'Posts')
+@section('content')
+  &lt;div class="mb-3"&gt;
+    &lt;a class="bg-indigo-600 text-white px-3 py-2 rounded" href="{{ route('posts.create') }}"&gt;New Post&lt;/a&gt;
+  &lt;/div&gt;
+  &lt;div class="bg-white border rounded"&gt;
+    &lt;table class="w-full text-sm"&gt;
+      &lt;thead class="bg-slate-100 text-left"&gt;
+        &lt;tr&gt;&lt;th class="p-2"&gt;Title&lt;/th&gt;&lt;th class="p-2"&gt;Published&lt;/th&gt;&lt;th class="p-2"&gt;&lt;/th&gt;&lt;/tr&gt;
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        @foreach($posts as $post)
+          &lt;tr class="border-t"&gt;
+            &lt;td class="p-2"&gt;&lt;a class="text-indigo-700" href="{{ route('posts.show', $post) }}"&gt;{{ $post-&gt;title }}&lt;/a&gt;&lt;/td&gt;
+            &lt;td class="p-2"&gt;{{ optional($post-&gt;published_at)-&gt;format('Y-m-d') ?? '—' }}&lt;/td&gt;
+            &lt;td class="p-2 text-right space-x-2"&gt;
+              &lt;a class="text-slate-700 underline" href="{{ route('posts.edit', $post) }}"&gt;Edit&lt;/a&gt;
+              &lt;form method="POST" action="{{ route('posts.destroy', $post) }}" class="inline" onsubmit="return confirm('Delete?')"&gt;
+                @csrf @method('DELETE')
+                &lt;button class="text-red-600 underline"&gt;Delete&lt;/button&gt;
+              &lt;/form&gt;
+            &lt;/td&gt;
+          &lt;/tr&gt;
+        @endforeach
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/div&gt;
+  &lt;div class="mt-4"&gt;{{ $posts-&gt;links() }}&lt;/div&gt;
+@endsection
+</code></pre>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-blade">&lt;!-- resources/views/posts/_form.blade.php --&gt;
+&lt;form method="POST" action="{{ $route }}" class="space-y-3"&gt;
+  @csrf
+  @if(!empty($method) &amp;&amp; in_array($method, ['PUT','PATCH','DELETE']))
+    @method($method)
+  @endif
+  &lt;label class="block"&gt;
+    &lt;span class="text-sm"&gt;Title&lt;/span&gt;
+    &lt;input name="title" value="{{ old('title', $post-&gt;title ?? '') }}" class="mt-1 w-full border rounded p-2" required /&gt;
+  &lt;/label&gt;
+  &lt;label class="block"&gt;
+    &lt;span class="text-sm"&gt;Body&lt;/span&gt;
+    &lt;textarea name="body" class="mt-1 w-full border rounded p-2" rows="4"&gt;{{ old('body', $post-&gt;body ?? '') }}&lt;/textarea&gt;
+  &lt;/label&gt;
+  &lt;label class="block"&gt;
+    &lt;span class="text-sm"&gt;Published at (optional)&lt;/span&gt;
+    &lt;input type="datetime-local" name="published_at" value="{{ old('published_at', optional($post-&gt;published_at ?? null)-&gt;format('Y-m-d\TH:i')) }}" class="mt-1 w-full border rounded p-2" /&gt;
+  &lt;/label&gt;
+  &lt;button class="bg-indigo-600 text-white rounded px-3 py-2"&gt;{{ $submit ?? 'Save' }}&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-blade">&lt;!-- resources/views/posts/create.blade.php --&gt;
+@extends('layouts.app')
+@section('title', 'New Post')
+@section('content')
+  @include('posts._form', [
+    'route' =&gt; route('posts.store'),
+    'method' =&gt; 'POST',
+    'submit' =&gt; 'Save'
+  ])
+@endsection
+</code></pre>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-blade">&lt;!-- resources/views/posts/edit.blade.php --&gt;
+@extends('layouts.app')
+@section('title', 'Edit Post')
+@section('content')
+  @include('posts._form', [
+    'route' =&gt; route('posts.update', $post),
+    'method' =&gt; 'PUT',
+    'submit' =&gt; 'Update',
+    'post' =&gt; $post
+  ])
+@endsection
+</code></pre>
+
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-blade">&lt;!-- resources/views/posts/show.blade.php --&gt;
+@extends('layouts.app')
+@section('title', $post-&gt;title)
+@section('content')
+  &lt;div class="prose max-w-none"&gt;
+    &lt;p class="text-slate-500 text-sm"&gt;By {{ $post-&gt;user-&gt;name ?? 'Unknown' }} • {{ $post-&gt;created_at-&gt;diffForHumans() }}&lt;/p&gt;
+    &lt;div class="mt-4 whitespace-pre-wrap"&gt;{{ $post-&gt;body }}&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="mt-4 space-x-2"&gt;
+    &lt;a class="underline" href="{{ route('posts.edit', $post) }}"&gt;Edit&lt;/a&gt;
+    &lt;a class="underline" href="{{ route('posts.index') }}"&gt;Back&lt;/a&gt;
+  &lt;/div&gt;
+@endsection
+</code></pre>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="font-semibold mb-2">Controller (API) template</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Post;
+use Illuminate\Http\Request;
+
+class PostController extends Controller
+{
+    public function index()
+    {
+        return Post::latest()->paginate(10);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'body' => 'nullable|string',
+        ]);
+
+        $validated['user_id'] = $request->user()->id;
+        return Post::create($validated);
+    }
+
+    public function show(Post $post)
+    {
+        return $post;
+    }
+
+    public function update(Request $request, Post $post)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'body' => 'nullable|string',
+        ]);
+
+        $post->update($validated);
+        return $post->fresh();
+    }
+
+    public function destroy(Post $post)
+    {
+        $post->delete();
+        return response()->noContent();
+    }
+}
+</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Artisan (Scaffolding) -->
+      <section id="artisan" class="bg-white border border-slate-200 rounded-lg shadow-sm">
+        <div class="p-5 border-b border-slate-200">
+          <h2 class="text-xl font-semibold">Artisan (Scaffolding)</h2>
+          <p class="text-slate-600 mt-1 text-sm">Generate controllers, models, and related files. Useful route commands included.</p>
+        </div>
+        <div class="p-5 space-y-8">
+          <div id="artisan-controllers">
+            <h3 class="font-semibold mb-2">Controllers</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-bash"># Resource controller (CRUD methods)
+php artisan make:controller UserController --resource
+
+# API-style resource controller (no create/edit views)
+php artisan make:controller Api/UserController --api
+
+# Single-action controller (invokable __invoke)
+php artisan make:controller ProfileController --invokable
+
+# Resource controller tied to a model
+php artisan make:controller PostController --model=Post --resource
+
+# Generate FormRequest classes for store/update (Laravel 10+)
+php artisan make:controller Admin/PostController --resource --model=Post --requests
+</code></pre>
+          </div>
+
+          <div id="artisan-models">
+            <h3 class="font-semibold mb-2">Models</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-bash"># Plain model
+php artisan make:model Post
+
+# Model + migration
+php artisan make:model Post -m
+
+# Model + migration + factory
+php artisan make:model Post -mf
+
+# Model + migration + seeder
+php artisan make:model Post -ms
+
+# Model + migration + controller (resource)
+php artisan make:model Post -mcr
+
+# Everything: migration, factory, seeder, policy, controller, etc.
+php artisan make:model Post -a   # same as --all
+
+# Pivot model
+php artisan make:model PostTag --pivot
+</code></pre>
+          </div>
+
+          <div id="artisan-migrations">
+            <h3 class="font-semibold mb-2">Migrations, Factories, Seeders</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-bash"># Migrations
+php artisan make:migration create_posts_table
+php artisan make:migration add_published_to_posts_table --table=posts
+
+# Run migrations
+php artisan migrate
+php artisan migrate:fresh --seed
+</code></pre>
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-bash"># Factory & seeder
+php artisan make:factory PostFactory --model=Post
+php artisan make:seeder PostSeeder
+
+# Seed database
+php artisan db:seed --class=PostSeeder
+</code></pre>
+            </div>
+          </div>
+
+          <div id="artisan-routes-cli">
+            <h3 class="font-semibold mb-2">Routes CLI</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-bash"># List routes
+php artisan route:list
+
+# Filtered list (by name or path) and custom columns
+php artisan route:list --name=volunteers --path=volunteers --columns=Method,URI,Name,Action,Middleware
+
+# Cache/clear routes for performance
+php artisan route:cache
+php artisan route:clear
+</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Routing -->
+      <section id="routing" class="bg-white border border-slate-200 rounded-lg shadow-sm">
+        <div class="p-5 border-b border-slate-200">
+          <h2 class="text-xl font-semibold">Routing</h2>
+          <p class="text-slate-600 mt-1 text-sm">Map URLs to controller logic.</p>
+        </div>
+        <div class="p-5 space-y-6">
+          <div class="rounded-md border-l-4 border-emerald-500 bg-emerald-50 p-3 text-sm text-slate-700">
+            <p class="font-medium">Beginner tip</p>
+            <ul class="list-disc ml-5 mt-1">
+              <li>Use <code class="bg-slate-100 text-slate-800 px-1 rounded">Route::resource()</code> to get all CRUD routes at once.</li>
+              <li>Name your routes and use the <code class="bg-slate-100 text-slate-800 px-1 rounded">route()</code> helper instead of hardcoded URLs.</li>
+            </ul>
+          </div>
+          <div id="basic-routes">
+            <h3 class="font-semibold mb-2">Basic Route Structure</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">
+// GET route → Controller@method
+Route::get('/volunteers/{volunteer}/details',
+  [VolunteerController::class, 'gotoVolunteerDetails']
+)->name('volunteers.volunteer-details');
+</code></pre>
+          </div>
+
+          <div id="route-params">
+            <h3 class="font-semibold mb-2">Route Parameters</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">
+// URL: /volunteers/5/details → $id = 5
+Route::get('/volunteers/{id}/details', [VolunteerController::class, 'show']);
+</code></pre>
+          </div>
+
+          <div id="http-methods">
+            <h3 class="font-semibold mb-2">HTTP Methods</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">use App\Http\Controllers\PostController;
+
+// Read
+Route::get('/posts', [PostController::class, 'index']);       // list
+Route::get('/posts/{post}', [PostController::class, 'show']);  // details
+
+// Create
+Route::get('/posts/create', [PostController::class, 'create']); // form
+Route::post('/posts', [PostController::class, 'store']);        // submit
+
+// Update
+Route::get('/posts/{post}/edit', [PostController::class, 'edit']); // form
+Route::put('/posts/{post}', [PostController::class, 'update']);    // full update
+Route::patch('/posts/{post}', [PostController::class, 'update']);  // partial update
+
+// Delete
+Route::delete('/posts/{post}', [PostController::class, 'destroy']);
+
+// Other helpers
+Route::match(['get','post'], '/search', [PostController::class, 'search']);
+Route::any('/ping', fn () => 'ok');
+// Route::options(...) rarely needed directly (CORS handled by middleware)
+</code></pre>
+
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-blade">&lt;!-- Create (POST) --&gt;
+&lt;form method="POST" action="{{ route('posts.store') }}"&gt;
+  @csrf
+  &lt;input name="title" /&gt;
+  &lt;button type="submit"&gt;Save&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- Update (PUT/PATCH) --&gt;
+&lt;form method="POST" action="{{ route('posts.update', $post) }}"&gt;
+  @csrf
+  @method('PUT') &lt;!-- or @method('PATCH') --&gt;
+  &lt;input name="title" value="{{ $post-&gt;title }}" /&gt;
+  &lt;button type="submit"&gt;Update&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- Delete (DELETE) --&gt;
+&lt;form method="POST" action="{{ route('posts.destroy', $post) }}" onsubmit="return confirm('Delete?')"&gt;
+  @csrf
+  @method('DELETE')
+  &lt;button type="submit" class="text-red-600"&gt;Delete&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+            </div>
+            <div class="rounded-md border-l-4 border-slate-400 bg-slate-50 p-3 text-sm text-slate-700 mt-2">
+              <p class="font-medium">Good to know</p>
+              <ul class="list-disc ml-5 mt-1">
+                <li>Browsers only support GET/POST in forms. Laravel uses method spoofing with <code class="bg-slate-100 text-slate-800 px-1 rounded">@method('PUT')</code>, <code class="bg-slate-100 text-slate-800 px-1 rounded">@method('PATCH')</code>, <code class="bg-slate-100 text-slate-800 px-1 rounded">@method('DELETE')</code>.</li>
+                <li>Always include <code class="bg-slate-100 text-slate-800 px-1 rounded">@csrf</code> in POST/PUT/PATCH/DELETE forms.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="when-to-use-methods">
+            <h3 class="font-semibold mb-2">When to use which method</h3>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+              <div class="bg-white border border-slate-200 rounded p-4">
+                <ul class="space-y-2">
+                  <li><span class="font-semibold">GET</span>: Read-only operations. Repeat-safe (doing it again doesn’t change data). Use for listing and showing pages (e.g., <code class="bg-slate-100 text-slate-800 px-1 rounded">/posts</code>, <code class="bg-slate-100 text-slate-800 px-1 rounded">/posts/1</code>). OK for search with query params.</li>
+                  <li><span class="font-semibold">POST</span>: Create or perform an action with side effects. Not repeat-safe (doing it again may create another record). Use for form submissions creating data or triggering actions (e.g., create post, logout, send email).</li>
+                  <li><span class="font-semibold">PUT</span>: Replace a full resource. Repeat-safe (sets the resource to this exact state). Send all updatable fields.</li>
+                  <li><span class="font-semibold">PATCH</span>: Partial update. Often repeat-safe if you set exact values; not repeat-safe if you increment counters. Send only changed fields.</li>
+                  <li><span class="font-semibold">DELETE</span>: Remove a resource. Repeat-safe in effect (once deleted, repeating doesn’t change anything further).</li>
+                </ul>
+              </div>
+              <div class="bg-white border border-slate-200 rounded p-4">
+                <ul class="space-y-2">
+                  <li><span class="font-semibold">Pick GET vs POST for search</span>: Public/bookmarkable search → GET with query string. Large/secure payloads → POST.</li>
+                  <li><span class="font-semibold">Redirect after write</span>: After POST/PUT/PATCH/DELETE, <em>redirect</em> (PRG pattern) to avoid resubmission and to get a clean URL.</li>
+                  <li><span class="font-semibold">Caching</span>: GET can be cached; POST/PUT/PATCH/DELETE generally aren’t. Don’t mutate state on GET.</li>
+                  <li><span class="font-semibold">CSRF</span>: Required for non-GET forms (Laravel’s <code class="bg-slate-100 text-slate-800 px-1 rounded">@csrf</code>).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="mt-3 text-sm text-slate-700">
+              <p class="font-medium">RESTful mapping example</p>
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-text">GET    /posts            → index
+GET    /posts/create     → create
+POST   /posts            → store
+GET    /posts/{post}     → show
+GET    /posts/{post}/edit→ edit
+PUT    /posts/{post}     → update
+PATCH  /posts/{post}     → update
+DELETE /posts/{post}     → destroy
+</code></pre>
+            </div>
+          </div>
+
+          <div id="route-names">
+            <h3 class="font-semibold mb-2">Route Names</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-blade">&lt;!-- In Blade --&gt;
+&lt;a href="{{ route('volunteers.volunteer-details', $volunteer-&gt;id) }}"&gt;
+  View Details
+&lt;/a&gt;
+</code></pre>
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">// In controller: generate URL (not a return)
+$url = route('volunteers.volunteer-details', $volunteer->id);
+</code></pre>
+            </div>
+          </div>
+
+          <div id="resource-routes">
+            <h3 class="font-semibold mb-2">Resource Routes (CRUD)</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">
+// One line to create all CRUD routes
+Route::resource('volunteers', VolunteerController::class);
+
+// Expands to:
+Route::get('/volunteers', [VolunteerController::class, 'index']);
+Route::get('/volunteers/create', [VolunteerController::class, 'create']);
+Route::post('/volunteers', [VolunteerController::class, 'store']);
+Route::get('/volunteers/{volunteer}', [VolunteerController::class, 'show']);
+Route::get('/volunteers/{volunteer}/edit', [VolunteerController::class, 'edit']);
+Route::put('/volunteers/{volunteer}', [VolunteerController::class, 'update']);
+Route::delete('/volunteers/{volunteer}', [VolunteerController::class, 'destroy']);
+</code></pre>
+          </div>
+
+          <div id="route-model-binding">
+            <h3 class="font-semibold mb-2">Route Model Binding</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">Route::get('/volunteers/{volunteer}', [VolunteerController::class, 'show']);
+
+// Controller receives the model instance directly
+public function show(Volunteer $volunteer)
+{
+    return view('volunteers.show', compact('volunteer'));
+}
+</code></pre>
+          </div>
+
+          <div id="route-groups">
+            <h3 class="font-semibold mb-2">Route Groups + Middleware</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">Route::middleware(['auth'])->group(function () {
+    Route::resource('volunteers', VolunteerController::class);
+    Route::resource('programs', ProgramController::class);
+});
+</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Controllers -->
+      <section id="controllers" class="bg-white border border-slate-200 rounded-lg shadow-sm">
+        <div class="p-5 border-b border-slate-200">
+          <h2 class="text-xl font-semibold">Controllers</h2>
+          <p class="text-slate-600 mt-1 text-sm">Handle requests, process logic, return responses.</p>
+        </div>
+        <div class="p-5 space-y-6">
+          <div class="rounded-md border-l-4 border-amber-500 bg-amber-50 p-3 text-sm text-slate-700">
+            <p class="font-medium">Beginner tip</p>
+            <ul class="list-disc ml-5 mt-1">
+              <li>Return a <code class="bg-slate-100 text-slate-800 px-1 rounded">view()</code> to show a page, and <code class="bg-slate-100 text-slate-800 px-1 rounded">redirect()</code> after saving data.</li>
+              <li>Always <code class="bg-slate-100 text-slate-800 px-1 rounded">validate()</code> incoming requests before using them.</li>
+            </ul>
+          </div>
+          <div id="controller-structure">
+            <h3 class="font-semibold mb-2">Structure</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">namespace App\Http\Controllers;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+
+class UserController extends Controller
+{
+    public function index()  { $users = User::paginate(15); return view('users.index', compact('users')); }
+    public function show($id) { $user = User::findOrFail($id); return view('users.show', compact('user')); }
+    public function create() { return view('users.create'); }
+    public function edit($id) { $user = User::findOrFail($id); return view('users.edit', compact('user')); }
+}
+</code></pre>
+          </div>
+
+          <div id="controller-crud">
+            <h3 class="font-semibold mb-2">CRUD Actions</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">// Store (POST)
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users',
+        'password' => 'required|min:8'
+    ]);
+
+    User::create($validated);
+    return redirect()->route('users.index')->with('success', 'User created!');
+}
+</code></pre>
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">// Update (PUT/PATCH)
+public function update(Request $request, $id)
+{
+    $user = User::findOrFail($id);
+
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $id
+    ]);
+
+    $user->update($validated);
+    return redirect()->route('users.show', $user)->with('success', 'Updated!');
+}
+</code></pre>
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto md:col-span-2"><button class="copy-btn">Copy</button><code class="language-php">// Destroy (DELETE)
+public function destroy($id)
+{
+    $user = User::findOrFail($id);
+    $user->delete();
+
+    return redirect()->route('users.index')->with('success', 'User deleted!');
+}
+</code></pre>
+            </div>
+          </div>
+
+          <div id="controller-returns">
+            <h3 class="font-semibold mb-2">Return Types</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">// View
+return view('users.index', compact('users'));
+
+// JSON
+return response()->json(['users' => $users]);
+
+// Redirect
+return redirect()->route('users.index');
+
+// Back with message
+return back()->with('success', 'Saved!');
+
+// Custom status
+return response('Created', 201);
+</code></pre>
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">// Error handling
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+public function show($id)
+{
+    try {
+        $user = User::findOrFail($id);
+        return view('users.show', compact('user'));
+    } catch (ModelNotFoundException $e) {
+        return redirect()->route('users.index')->with('error', 'User not found');
+    }
+}
+</code></pre>
+            </div>
+          </div>
+
+          <div id="controller-middleware">
+            <h3 class="font-semibold mb-2">Middleware in Controllers</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">class UserController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('auth');                // all methods
+        $this->middleware('admin')->only('destroy');
+        $this->middleware('guest')->except(['index','show']);
+    }
+}
+</code></pre>
+          </div>
+
+          <div id="controller-helpers">
+            <h3 class="font-semibold mb-2">Common Patterns</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">// Authorization
+public function update(Request $request, Post $post)
+{
+    // Manual check
+    if ($post->user_id !== auth()->id()) abort(403);
+
+    // Or policy
+    $this->authorize('update', $post);
+}
+</code></pre>
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">// File uploads
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required',
+        'avatar' => 'image|mimes:jpeg,png,jpg|max:2048'
+    ]);
+
+    if ($request->hasFile('avatar')) {
+        $path = $request->file('avatar')->store('avatars', 'public');
+        $validated['avatar'] = $path;
+    }
+
+    User::create($validated);
+}
+</code></pre>
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto md:col-span-2"><button class="copy-btn">Copy</button><code class="language-php">// Search + Pagination
+public function index(Request $request)
+{
+    $query = User::query();
+
+    if ($request->filled('search')) {
+        $query->where('name', 'like', '%'.$request->search.'%');
+    }
+
+    $users = $query->paginate(15);
+    return view('users.index', compact('users'));
+}
+</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Models -->
+      <section id="models" class="bg-white border border-slate-200 rounded-lg shadow-sm">
+        <div class="p-5 border-b border-slate-200">
+          <h2 class="text-xl font-semibold">Models</h2>
+          <p class="text-slate-600 mt-1 text-sm">Eloquent ORM for interacting with your database.</p>
+        </div>
+        <div class="p-5 space-y-6">
+          <div class="rounded-md border-l-4 border-sky-500 bg-sky-50 p-3 text-sm text-slate-700">
+            <p class="font-medium">Beginner tip</p>
+            <ul class="list-disc ml-5 mt-1">
+              <li>Set <code class="bg-slate-100 text-slate-800 px-1 rounded">$fillable</code> to avoid mass-assignment errors.</li>
+              <li>Use relationships to fetch related data cleanly (e.g., <code class="bg-slate-100 text-slate-800 px-1 rounded">$user->posts</code>).</li>
+            </ul>
+          </div>
+          <div id="model-basics">
+            <h3 class="font-semibold mb-2">Basics & $fillable</h3>
+            <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">use Illuminate\Database\Eloquent\Model;
+
+class User extends Model
+{
+    protected $fillable = ['name', 'email', 'password'];
+}
+</code></pre>
+          </div>
+
+          <div id="model-relationships">
+            <h3 class="font-semibold mb-3">Relationships</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 class="font-medium mb-1 text-slate-700">One To One</h4>
+                <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">// User.php
+public function profile() { return $this->hasOne(Profile::class); }
+
+// Profile.php
+public function user() { return $this->belongsTo(User::class); }
+</code></pre>
+              </div>
+              <div>
+                <h4 class="font-medium mb-1 text-slate-700">One To Many</h4>
+                <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">// User.php
+public function posts() { return $this->hasMany(Post::class); }
+
+// Post.php
+public function user() { return $this->belongsTo(User::class); }
+</code></pre>
+              </div>
+              <div>
+                <h4 class="font-medium mb-1 text-slate-700">Many To Many</h4>
+                <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">// User.php
+public function roles() { return $this->belongsToMany(Role::class); }
+
+// Role.php
+public function users() { return $this->belongsToMany(User::class); }
+</code></pre>
+              </div>
+              <div>
+                <h4 class="font-medium mb-1 text-slate-700">Polymorphic One To One</h4>
+                <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">// Image.php
+public function imageable() { return $this->morphTo(); }
+
+// Post.php / User.php
+public function image() { return $this->morphOne(Image::class, 'imageable'); }
+</code></pre>
+              </div>
+              <div>
+                <h4 class="font-medium mb-1 text-slate-700">Polymorphic One To Many</h4>
+                <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">// Comment.php
+public function commentable() { return $this->morphTo(); }
+
+// Post.php / Video.php
+public function comments() { return $this->morphMany(Comment::class, 'commentable'); }
+</code></pre>
+              </div>
+              <div>
+                <h4 class="font-medium mb-1 text-slate-700">Polymorphic Many To Many</h4>
+                <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">// Tag.php
+public function posts() { return $this->morphedByMany(Post::class, 'taggable'); }
+public function videos() { return $this->morphedByMany(Video::class, 'taggable'); }
+
+// Post.php / Video.php
+public function tags() { return $this->morphToMany(Tag::class, 'taggable'); }
+</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <div id="model-usage">
+            <h3 class="font-semibold mb-2">Common Usage</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">// Create
+$user = User::create([
+  'name' => 'Jeric',
+  'email' => 'jeric@example.com',
+  'password' => bcrypt('secret'),
+]);
+
+// Query
+$users = User::where('active', true)->get();
+$first = User::first();
+
+// Update
+$user = User::find(1);
+$user->email = 'new@email.com';
+$user->save();
+</code></pre>
+              <pre class="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto"><button class="copy-btn">Copy</button><code class="language-php">// Using relationships
+$donations = $user->donations;
+$donor = $donation->user;
+
+// Eager loading
+$users = User::with('donations')->get();
+</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer note -->
+      <section class="text-sm text-slate-500">
+        For details, see Laravel docs:
+        <a class="text-indigo-600 hover:underline" href="https://laravel.com/docs/routing" target="_blank" rel="noreferrer">Routing</a>,
+        <a class="text-indigo-600 hover:underline" href="https://laravel.com/docs/controllers" target="_blank" rel="noreferrer">Controllers</a>,
+        <a class="text-indigo-600 hover:underline" href="https://laravel.com/docs/eloquent" target="_blank" rel="noreferrer">Eloquent</a>.
+      </section>
+    </section>
+  </main>
+
+  <script>
+    // Copy buttons for all code blocks
+    document.querySelectorAll('pre').forEach(pre => {
+      const btn = pre.querySelector('.copy-btn');
+      if (!btn) return;
+      btn.addEventListener('click', async () => {
+        const code = pre.querySelector('code')?.innerText || '';
+        try {
+          await navigator.clipboard.writeText(code);
+          const old = btn.textContent;
+          btn.textContent = 'Copied';
+          setTimeout(() => (btn.textContent = old), 1200);
+        } catch {
+          btn.textContent = 'Failed';
+          setTimeout(() => (btn.textContent = 'Copy'), 1200);
+        }
+      });
+    });
+
+    // Simple client-side filter
+    const input = document.getElementById('search');
+    const sections = Array.from(document.querySelectorAll('section[id]'));
+    input?.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      sections.forEach(sec => {
+        if (!q) { sec.classList.remove('hidden'); return; }
+        const text = sec.innerText.toLowerCase();
+        sec.classList.toggle('hidden', !text.includes(q));
+      });
+    });
+  </script>
+</body>
+</html>
